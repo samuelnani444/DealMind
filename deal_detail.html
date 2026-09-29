@@ -1,0 +1,904 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ deal.deal_name or deal.company_name or deal.company or 'Deal Details' }} | DealMind</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg: #f5f7fb;
+            --surface: #fff;
+            --sidebar: #111827;
+            --text: #182230;
+            --muted: #788496;
+            --border: #e8edf4;
+            --primary: #6254e8;
+            --primary-light: #eeecff;
+            --green: #16a477;
+            --green-light: #e6f7f1;
+            --orange: #e99a35;
+            --orange-light: #fff4e3;
+            --red: #df5c67;
+            --red-light: #fff0f1;
+            --shadow: 0 10px 30px rgba(29,42,68,.045);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: "DM Sans", sans-serif;
+        }
+
+        a { color: inherit; text-decoration: none; }
+        button, input, select, textarea { font: inherit; }
+
+        .app { min-height: 100vh; display: flex; }
+
+        .sidebar {
+            width: 250px;
+            min-height: 100vh;
+            padding: 28px 18px;
+            background: var(--sidebar);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 10px;
+            margin-bottom: 46px;
+        }
+
+        .brand-icon {
+            width: 40px;
+            height: 40px;
+            display: grid;
+            place-items: center;
+            border-radius: 13px;
+            background: linear-gradient(135deg,#897dff,#5c4bd8);
+            box-shadow: 0 7px 18px rgba(98,84,232,.32);
+            font-size: 21px;
+            font-weight: 800;
+        }
+
+        .brand-name {
+            font-family: "Manrope",sans-serif;
+            font-size: 19px;
+            font-weight: 800;
+            letter-spacing: -.6px;
+        }
+
+        .brand-name span { color: #a99fff; }
+
+        .nav-label {
+            padding: 0 12px;
+            margin: 0 0 12px;
+            color: #707b8d;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1.6px;
+            text-transform: uppercase;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            padding: 12px 14px;
+            margin: 3px 0;
+            border-radius: 11px;
+            color: #9ca3af;
+            font-size: 14px;
+            transition: .22s ease;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: white;
+            background: rgba(255,255,255,.09);
+            transform: translateX(3px);
+        }
+
+        .nav-link.active {
+            background: linear-gradient(90deg,rgba(111,96,239,.28),rgba(111,96,239,.09));
+            box-shadow: inset 3px 0 #8e82ff;
+        }
+
+        .nav-icon { width: 20px; text-align: center; font-size: 17px; }
+
+        .sidebar-bottom {
+            margin-top: auto;
+            padding: 17px;
+            border: 1px solid rgba(255,255,255,.09);
+            border-radius: 14px;
+            background: rgba(255,255,255,.045);
+        }
+
+        .sidebar-bottom strong { display: block; font-size: 13px; margin-bottom: 6px; }
+        .sidebar-bottom p { margin: 0; color: #9ba5b5; font-size: 11px; line-height: 1.6; }
+
+        .main { flex: 1; min-width: 0; padding: 30px 38px 48px; }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 25px;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 600;
+            transition: color .2s;
+        }
+
+        .back-link:hover { color: var(--primary); }
+
+        .eyebrow {
+            margin: 17px 0 7px;
+            color: var(--muted);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+        }
+
+        h1, h2, h3, p { margin-top: 0; }
+
+        h1 {
+            margin-bottom: 0;
+            font-family: "Manrope",sans-serif;
+            font-size: clamp(23px,3vw,30px);
+            letter-spacing: -1px;
+            overflow-wrap: anywhere;
+        }
+
+        .button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 11px 16px;
+            border: 0;
+            border-radius: 10px;
+            background: var(--primary);
+            color: white;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 6px 14px rgba(98,84,232,.18);
+            transition: transform .2s,box-shadow .2s,background .2s;
+        }
+
+        .button:hover {
+            background: #5144d0;
+            transform: translateY(-2px);
+            box-shadow: 0 9px 20px rgba(98,84,232,.25);
+        }
+
+        .button.secondary {
+            color: #5549d3;
+            background: var(--primary-light);
+            box-shadow: none;
+        }
+
+        .button.secondary:hover { background: #e2dfff; }
+
+        .hero {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 20px;
+            padding: 24px;
+            margin-bottom: 19px;
+            border: 1px solid var(--border);
+            border-radius: 17px;
+            background: linear-gradient(120deg,#fff 55%,#f5f3ff);
+            box-shadow: var(--shadow);
+            animation: rise .5s both;
+        }
+
+        .hero-left { min-width: 0; }
+        .company-line { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 9px; }
+        .company-name { color: var(--muted); font-size: 13px; font-weight: 600; }
+
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 10px;
+            border-radius: 30px;
+            background: #f1f3f7;
+            color: #687386;
+            font-size: 10px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .pill.won { color: #13845f; background: #e4f7ef; }
+        .pill.lost { color: #c94f5b; background: #fff0f1; }
+        .pill.negotiation { color: #a66a15; background: #fff4e1; }
+        .pill.proposal { color: #6254c9; background: #efedff; }
+
+        .hero-description { margin: 11px 0 0; color: var(--muted); font-size: 12px; line-height: 1.7; }
+
+        .hero-value { text-align: right; flex-shrink: 0; }
+        .hero-value small { display: block; margin-bottom: 7px; color: var(--muted); font-size: 11px; }
+        .hero-value strong {
+            display: block;
+            font-family: "Manrope",sans-serif;
+            font-size: clamp(22px,3vw,31px);
+            letter-spacing: -1px;
+            overflow-wrap: anywhere;
+        }
+
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(3,minmax(0,1fr));
+            gap: 15px;
+            margin-bottom: 19px;
+        }
+
+        .metric {
+            padding: 19px;
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            background: var(--surface);
+            box-shadow: var(--shadow);
+            animation: rise .55s both;
+            transition: transform .2s;
+        }
+
+        .metric:nth-child(2) { animation-delay: .07s; }
+        .metric:nth-child(3) { animation-delay: .14s; }
+        .metric:hover { transform: translateY(-3px); }
+
+        .metric-label { color: var(--muted); font-size: 11px; font-weight: 600; }
+        .metric-value {
+            margin: 11px 0 5px;
+            font-family: "Manrope",sans-serif;
+            font-size: 25px;
+            font-weight: 800;
+            letter-spacing: -.7px;
+        }
+        .metric-note { margin: 0; color: var(--muted); font-size: 10px; }
+
+        .layout {
+            display: grid;
+            grid-template-columns: minmax(0,1.45fr) minmax(260px,.8fr);
+            gap: 19px;
+            align-items: start;
+        }
+
+        .left-column,.right-column { display: grid; gap: 19px; min-width: 0; }
+
+        .panel {
+            min-width: 0;
+            padding: 22px;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            background: var(--surface);
+            box-shadow: var(--shadow);
+            animation: rise .6s .12s both;
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .panel-title {
+            margin: 0 0 5px;
+            font-family: "Manrope",sans-serif;
+            font-size: 15px;
+            font-weight: 800;
+            letter-spacing: -.3px;
+        }
+
+        .panel-subtitle { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.6; }
+
+        .health-wrap { display: flex; align-items: center; gap: 18px; }
+
+        .health-ring {
+            --score: {{ health_score|default(0)|int }};
+            width: 112px;
+            height: 112px;
+            flex-shrink: 0;
+            display: grid;
+            place-items: center;
+            border-radius: 50%;
+            background: conic-gradient(#6a5be8 calc(var(--score)*1%),#edf0f6 0);
+            animation: ringIn 1s .2s both;
+        }
+
+        .health-inner {
+            width: 88px;
+            height: 88px;
+            display: grid;
+            place-content: center;
+            text-align: center;
+            border-radius: 50%;
+            background: white;
+        }
+
+        .health-inner strong {
+            font-family: "Manrope",sans-serif;
+            font-size: 25px;
+            line-height: 1.1;
+        }
+
+        .health-inner small { color: var(--muted); font-size: 9px; }
+
+        .health-copy { flex: 1; }
+        .health-copy strong { display: block; margin-bottom: 7px; font-size: 13px; }
+        .health-copy p { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.7; }
+
+        .ai-panel {
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #dcd8ff;
+            background: linear-gradient(145deg,#fbfaff,#f3f1ff);
+        }
+
+        .ai-panel::after {
+            content: "✦";
+            position: absolute;
+            top: -17px;
+            right: 12px;
+            color: rgba(98,84,232,.07);
+            font-size: 115px;
+            pointer-events: none;
+        }
+
+        .ai-heading { display: flex; align-items: center; gap: 10px; }
+        .ai-icon {
+            width: 36px;
+            height: 36px;
+            display: grid;
+            place-items: center;
+            border-radius: 11px;
+            background: #e8e4ff;
+            color: #5e50d7;
+            font-size: 18px;
+        }
+
+        .ai-label {
+            display: inline-block;
+            margin-bottom: 5px;
+            color: #7265d6;
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: 1.2px;
+        }
+
+        .ai-panel .panel-title { color: #342c75; }
+        .ai-panel .panel-subtitle { color: #7e78a8; }
+
+        .analysis-content {
+            position: relative;
+            z-index: 1;
+            margin-top: 17px;
+            padding: 16px;
+            border: 1px solid rgba(111,96,239,.12);
+            border-radius: 12px;
+            background: rgba(255,255,255,.78);
+        }
+
+        .analysis-content h3 {
+            margin: 0 0 8px;
+            color: #393174;
+            font-size: 12px;
+        }
+
+        .analysis-content p,.analysis-content li {
+            color: #625d82;
+            font-size: 11px;
+            line-height: 1.75;
+        }
+
+        .analysis-content p { margin-bottom: 12px; }
+        .analysis-content ul { margin: 0 0 14px; padding-left: 18px; }
+        .analysis-content ul:last-child { margin-bottom: 0; }
+
+        .analysis-meta { margin-top: 12px; color: #8983aa; font-size: 10px; }
+
+        .risk-card {
+            padding: 14px;
+            margin-bottom: 10px;
+            border-radius: 11px;
+            background: #fff8f8;
+            border: 1px solid #ffebed;
+        }
+
+        .risk-card:last-child { margin-bottom: 0; }
+        .risk-card strong { display: block; margin-bottom: 5px; font-size: 12px; }
+        .risk-card p { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.65; }
+
+        .risk-level {
+            display: inline-block;
+            margin-bottom: 10px;
+            padding: 5px 9px;
+            border-radius: 20px;
+            background: var(--orange-light);
+            color: #a66a15;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .activity-list { position: relative; display: grid; gap: 0; }
+
+        .activity-item {
+            position: relative;
+            display: grid;
+            grid-template-columns: 30px minmax(0,1fr);
+            gap: 12px;
+            padding-bottom: 20px;
+        }
+
+        .activity-item:not(:last-child)::before {
+            content: "";
+            position: absolute;
+            left: 14px;
+            top: 30px;
+            bottom: 0;
+            width: 1px;
+            background: #e8eaf1;
+        }
+
+        .activity-dot {
+            position: relative;
+            z-index: 1;
+            width: 29px;
+            height: 29px;
+            display: grid;
+            place-items: center;
+            border-radius: 50%;
+            background: var(--primary-light);
+            color: var(--primary);
+            font-size: 12px;
+        }
+
+        .activity-body { min-width: 0; }
+        .activity-body strong { display: block; margin: 3px 0 5px; font-size: 12px; }
+        .activity-body p { margin: 0 0 6px; color: #697588; font-size: 11px; line-height: 1.6; overflow-wrap: anywhere; }
+        .activity-body small { color: #9aa4b3; font-size: 10px; }
+
+        .activity-form { display: grid; gap: 12px; }
+        .field { display: flex; flex-direction: column; gap: 7px; }
+        .field label { color: #4d596b; font-size: 11px; font-weight: 700; }
+
+        .field input,.field select,.field textarea {
+            width: 100%;
+            padding: 11px 12px;
+            border: 1px solid #e2e7ef;
+            border-radius: 9px;
+            outline: none;
+            background: #fbfcfe;
+            color: var(--text);
+            font-size: 12px;
+            transition: border .2s,box-shadow .2s;
+        }
+
+        .field input:focus,.field select:focus,.field textarea:focus {
+            border-color: #9187f3;
+            box-shadow: 0 0 0 3px rgba(98,84,232,.1);
+        }
+
+        .field textarea { min-height: 85px; resize: vertical; }
+
+        .empty {
+            padding: 25px 10px;
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.7;
+            text-align: center;
+        }
+
+        .footer-note { margin-top: 22px; color: #9aa4b3; font-size: 10px; text-align: center; }
+
+        @keyframes rise {
+            from { opacity: 0; transform: translateY(13px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes ringIn {
+            from { opacity: .3; transform: scale(.85) rotate(-25deg); }
+            to { opacity: 1; transform: scale(1) rotate(0); }
+        }
+
+        @media (max-width: 1100px) {
+            .sidebar { width: 215px; }
+            .main { padding: 27px 24px; }
+            .layout { grid-template-columns: 1fr; }
+            .right-column { grid-template-columns: repeat(2,minmax(0,1fr)); }
+        }
+
+        @media (max-width: 700px) {
+            .app { display: block; }
+            .sidebar { width: 100%; min-height: auto; padding: 14px; }
+            .brand { margin: 0 0 12px; }
+            .nav-label,.sidebar-bottom { display: none; }
+            .sidebar nav { display: flex; gap: 6px; overflow-x: auto; }
+            .nav-link { flex-shrink: 0; margin: 0; padding: 10px 12px; }
+            .nav-link:hover,.nav-link.active { transform: none; }
+            .main { padding: 20px 15px 35px; }
+            .hero { display: block; padding: 18px; }
+            .hero-value { margin-top: 20px; text-align: left; }
+            .metrics { gap: 9px; }
+            .metric { padding: 13px; }
+            .metric-value { font-size: 21px; }
+            .right-column { grid-template-columns: 1fr; }
+            .panel { padding: 17px; }
+            .health-wrap { align-items: flex-start; flex-direction: column; }
+            .topbar { align-items: flex-start; }
+            .topbar .button { padding: 10px 12px; font-size: 11px; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,*::before,*::after {
+                animation-duration: .01ms !important;
+                animation-iteration-count: 1 !important;
+                scroll-behavior: auto !important;
+                transition-duration: .01ms !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="app">
+    <aside class="sidebar">
+        <a class="brand" href="{{ url_for('index') }}">
+            <div class="brand-icon">D</div>
+            <div class="brand-name">Deal<span>Mind</span></div>
+        </a>
+
+        <p class="nav-label">Workspace</p>
+        <nav>
+            <a class="nav-link" href="{{ url_for('index') }}">
+                <span class="nav-icon">▦</span> Dashboard
+            </a>
+            <a class="nav-link active" href="#deal-overview">
+                <span class="nav-icon">◫</span> Deal details
+            </a>
+            <a class="nav-link" href="#ai-analysis">
+                <span class="nav-icon">✦</span> AI intelligence
+            </a>
+            <a class="nav-link" href="#activity">
+                <span class="nav-icon">◷</span> Activity
+            </a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <strong>✦ DealMind Intelligence</strong>
+            <p>Turn deal information into clearer next steps with AI-powered analysis.</p>
+        </div>
+    </aside>
+
+    <main class="main">
+        <header class="topbar">
+            <div>
+                <a class="back-link" href="{{ url_for('index') }}">← Back to dashboard</a>
+                <p class="eyebrow">DEAL MANAGEMENT / DETAILS</p>
+                <h1>{{ deal.deal_name or deal.company_name or deal.company or 'Deal details' }}</h1>
+            </div>
+
+            <form action="{{ url_for('analyze_deal_route', deal_id=deal.id) }}" method="POST">
+                <button class="button" type="submit">✦ Analyze with AI</button>
+            </form>
+        </header>
+
+        <section class="hero" id="deal-overview">
+            <div class="hero-left">
+                <div class="company-line">
+                    <span class="company-name">{{ deal.company_name or deal.company or 'Company not specified' }}</span>
+                    {% set stage_name = (deal.stage or 'Lead')|lower %}
+                    <span class="pill {% if stage_name == 'won' %}won{% elif stage_name == 'lost' %}lost{% elif stage_name == 'negotiation' %}negotiation{% elif stage_name == 'proposal' %}proposal{% endif %}">
+                        {{ deal.stage or 'Lead' }}
+                    </span>
+                </div>
+
+                <h1 style="font-size:clamp(20px,2.5vw,26px);">{{ deal.deal_name or 'Deal overview' }}</h1>
+
+                <p class="hero-description">
+                    {% if deal.contact_person or deal.contact_name %}
+                        Contact: {{ deal.contact_person or deal.contact_name }}
+                    {% endif %}
+                    {% if deal.contact_email %}
+                        · {{ deal.contact_email }}
+                    {% endif %}
+                    {% if deal.notes %}
+                        <br>{{ deal.notes }}
+                    {% endif %}
+                </p>
+            </div>
+
+            <div class="hero-value">
+                <small>Deal value</small>
+                <strong>₹{{ "{:,.2f}".format((deal.deal_value or 0)|float) }}</strong>
+            </div>
+        </section>
+
+        <section class="metrics">
+            <article class="metric">
+                <span class="metric-label">Win probability</span>
+                <p class="metric-value">{{ deal.probability|default(0) }}%</p>
+                <p class="metric-note">Current estimated likelihood</p>
+            </article>
+
+            <article class="metric">
+                <span class="metric-label">Weighted deal value</span>
+                <p class="metric-value">₹{{ "{:,.0f}".format(((deal.deal_value or 0)|float) * ((deal.probability or 0)|float) / 100) }}</p>
+                <p class="metric-note">Value × probability</p>
+            </article>
+
+            <article class="metric">
+                <span class="metric-label">Deal health score</span>
+                <p class="metric-value">{{ health_score|default(0) }}<span style="font-size:14px;color:var(--muted);">/100</span></p>
+                <p class="metric-note">Based on available deal information</p>
+            </article>
+        </section>
+
+        <section class="layout">
+            <div class="left-column">
+                <article class="panel">
+                    <div class="panel-header">
+                        <div>
+                            <h2 class="panel-title">Deal health</h2>
+                            <p class="panel-subtitle">A visual snapshot of the deal's current health.</p>
+                        </div>
+                        <span class="pill">Overview</span>
+                    </div>
+
+                    <div class="health-wrap">
+                        <div class="health-ring">
+                            <div class="health-inner">
+                                <strong>{{ health_score|default(0) }}</strong>
+                                <small>OUT OF 100</small>
+                            </div>
+                        </div>
+                        <div class="health-copy">
+                            <strong>
+                                {% if health_score|default(0)|int >= 75 %}
+                                    Positive deal signals
+                                {% elif health_score|default(0)|int >= 45 %}
+                                    Room to strengthen
+                                {% else %}
+                                    Needs attention
+                                {% endif %}
+                            </strong>
+                            <p>
+                                This score is a quick indicator based on the information available in your deal record.
+                                Review the AI analysis and activity history before making decisions.
+                            </p>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="panel" id="ai-analysis">
+                    <div class="panel-header">
+                        <div>
+                            <div class="ai-heading">
+                                <div class="ai-icon">✦</div>
+                                <div>
+                                    <span class="ai-label">DEALMIND AI</span>
+                                    <h2 class="panel-title">AI intelligence report</h2>
+                                </div>
+                            </div>
+                            <p class="panel-subtitle" style="margin-top:10px;">Insights generated from your deal information.</p>
+                        </div>
+                        <span class="pill proposal">AI</span>
+                    </div>
+
+                    {% if latest_analysis %}
+                        <div class="analysis-content">
+                            {% if latest_analysis.summary %}
+                                <h3>Problem summary / overview</h3>
+                                <p>{{ latest_analysis.summary }}</p>
+                            {% endif %}
+
+                            {% if latest_analysis.risk_level %}
+                                <h3>Risk level</h3>
+                                <p><span class="risk-level">{{ latest_analysis.risk_level }}</span></p>
+                            {% endif %}
+
+                            {% if latest_analysis.risks %}
+                                <h3>Potential risks</h3>
+                                {% if latest_analysis.risks is string %}
+                                    <p>{{ latest_analysis.risks }}</p>
+                                {% else %}
+                                    <ul>
+                                        {% for item in latest_analysis.risks %}
+                                            <li>{{ item }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                {% endif %}
+                            {% endif %}
+
+                            {% if latest_analysis.opportunities %}
+                                <h3>Opportunities</h3>
+                                {% if latest_analysis.opportunities is string %}
+                                    <p>{{ latest_analysis.opportunities }}</p>
+                                {% else %}
+                                    <ul>
+                                        {% for item in latest_analysis.opportunities %}
+                                            <li>{{ item }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                {% endif %}
+                            {% endif %}
+
+                            {% if latest_analysis.next_actions %}
+                                <h3>Recommended next actions</h3>
+                                {% if latest_analysis.next_actions is string %}
+                                    <p>{{ latest_analysis.next_actions }}</p>
+                                {% else %}
+                                    <ul>
+                                        {% for item in latest_analysis.next_actions %}
+                                            <li>{{ item }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                {% endif %}
+                            {% endif %}
+
+                            {% if latest_analysis.analysis_mode %}
+                                <div class="analysis-meta">Analysis mode: {{ latest_analysis.analysis_mode }}</div>
+                            {% endif %}
+
+                            {% if latest_analysis.created_at %}
+                                <div class="analysis-meta">Last analyzed: {{ latest_analysis.created_at }}</div>
+                            {% endif %}
+                        </div>
+                    {% else %}
+                        <div class="empty">
+                            <div style="font-size:30px;margin-bottom:10px;">✦</div>
+                            <strong>No AI report yet</strong><br>
+                            Run an analysis to generate a summary, identify risks, and explore possible next actions.
+                            <div style="margin-top:16px;">
+                                <form action="{{ url_for('analyze_deal_route', deal_id=deal.id) }}" method="POST">
+                                    <button type="submit" class="button">✦ Generate AI analysis</button>
+                                </form>
+                            </div>
+                        </div>
+                    {% endif %}
+                </article>
+
+                <article class="panel" id="activity">
+                    <div class="panel-header">
+                        <div>
+                            <h2 class="panel-title">Activity timeline</h2>
+                            <p class="panel-subtitle">A record of updates and interactions for this deal.</p>
+                        </div>
+                        <span class="stat-icon purple">◷</span>
+                    </div>
+
+                    {% if activities %}
+                        <div class="activity-list">
+                            {% for activity in activities %}
+                                <div class="activity-item">
+                                    <div class="activity-dot">✓</div>
+                                    <div class="activity-body">
+                                        <strong>{{ activity.activity_type or 'Update' }}</strong>
+                                        <p>{{ activity.description }}</p>
+                                        {% if activity.created_at %}
+                                            <small>{{ activity.created_at }}</small>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="empty">No activities recorded yet. Add the first update below.</div>
+                    {% endif %}
+                </article>
+            </div>
+
+            <div class="right-column">
+                <article class="panel">
+                    <div class="panel-header">
+                        <div>
+                            <h2 class="panel-title">Add activity</h2>
+                            <p class="panel-subtitle">Record a call, meeting, or important update.</p>
+                        </div>
+                    </div>
+
+                    <form class="activity-form" action="{{ url_for('add_activity', deal_id=deal.id) }}" method="POST">
+                        <div class="field">
+                            <label for="activity_type">Activity type</label>
+                            <select id="activity_type" name="activity_type" required>
+                                <option value="Call">Call</option>
+                                <option value="Meeting">Meeting</option>
+                                <option value="Email">Email</option>
+                                <option value="Note">Note</option>
+                                <option value="Follow-up">Follow-up</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+
+                        <div class="field">
+                            <label for="description">Description</label>
+                            <textarea id="description" name="description" placeholder="What happened? Add the details here..." required></textarea>
+                        </div>
+
+                        <button type="submit" class="button" style="width:100%;">＋ Save activity</button>
+                    </form>
+                </article>
+
+                <article class="panel">
+                    <div class="panel-header">
+                        <div>
+                            <h2 class="panel-title">Deal snapshot</h2>
+                            <p class="panel-subtitle">Key information at a glance.</p>
+                        </div>
+                    </div>
+
+                    <div style="display:grid;gap:15px;">
+                        <div>
+                            <div style="font-size:10px;color:var(--muted);margin-bottom:5px;">Company</div>
+                            <strong style="font-size:12px;">{{ deal.company_name or deal.company or 'Not specified' }}</strong>
+                        </div>
+                        <div style="height:1px;background:var(--border);"></div>
+                        <div>
+                            <div style="font-size:10px;color:var(--muted);margin-bottom:5px;">Contact person</div>
+                            <strong style="font-size:12px;">{{ deal.contact_person or deal.contact_name or 'Not specified' }}</strong>
+                        </div>
+                        <div style="height:1px;background:var(--border);"></div>
+                        <div>
+                            <div style="font-size:10px;color:var(--muted);margin-bottom:5px;">Contact email</div>
+                            <strong style="font-size:12px;overflow-wrap:anywhere;">{{ deal.contact_email or 'Not specified' }}</strong>
+                        </div>
+                        <div style="height:1px;background:var(--border);"></div>
+                        <div>
+                            <div style="font-size:10px;color:var(--muted);margin-bottom:5px;">Current stage</div>
+                            <strong style="font-size:12px;">{{ deal.stage or 'Lead' }}</strong>
+                        </div>
+                        <div style="height:1px;background:var(--border);"></div>
+                        <div>
+                            <div style="font-size:10px;color:var(--muted);margin-bottom:5px;">Probability</div>
+                            <strong style="font-size:12px;">{{ deal.probability|default(0) }}%</strong>
+                        </div>
+                    </div>
+                </article>
+
+                {% if latest_analysis and latest_analysis.risk_level %}
+                    <article class="panel">
+                        <div class="panel-header">
+                            <div>
+                                <h2 class="panel-title">Risk indicator</h2>
+                                <p class="panel-subtitle">From the latest AI report.</p>
+                            </div>
+                            <span class="stat-icon orange">!</span>
+                        </div>
+                        <div class="risk-card">
+                            <span class="risk-level">{{ latest_analysis.risk_level }}</span>
+                            <p>Review the AI report for the detailed risk notes and suggested follow-up actions.</p>
+                        </div>
+                    </article>
+                {% endif %}
+            </div>
+        </section>
+
+        <p class="footer-note">DealMind · AI-powered business intelligence · Samuel Technologies</p>
+    </main>
+</div>
+</body>
+</html>

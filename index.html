@@ -1,0 +1,1067 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DealMind | Business Intelligence</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --bg: #f5f7fb;
+    --surface: #ffffff;
+    --sidebar: #111827;
+    --text: #182230;
+    --muted: #788496;
+    --border: #e8edf4;
+    --primary: #6254e8;
+    --primary-light: #eeecff;
+    --green: #16a477;
+    --green-light: #e6f7f1;
+    --orange: #e99a35;
+    --orange-light: #fff4e3;
+    --red: #df5c67;
+    --red-light: #fff0f1;
+    --shadow: 0 10px 30px rgba(29,42,68,.045);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "DM Sans", sans-serif;
+}
+
+button, input, select, textarea {
+    font: inherit;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.app {
+    min-height: 100vh;
+    display: flex;
+}
+
+/* SIDEBAR */
+
+.sidebar {
+    width: 250px;
+    min-height: 100vh;
+    padding: 28px 18px;
+    background: var(--sidebar);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 10px;
+    margin-bottom: 46px;
+}
+
+.brand-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 13px;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(135deg,#897dff,#5c4bd8);
+    font-size: 21px;
+    font-weight: 800;
+    box-shadow: 0 7px 18px rgba(98,84,232,.32);
+}
+
+.brand-name {
+    font-family: "Manrope", sans-serif;
+    font-size: 19px;
+    font-weight: 800;
+    letter-spacing: -.6px;
+}
+
+.brand-name span {
+    color: #a99fff;
+}
+
+.nav-label {
+    padding: 0 12px;
+    margin: 0 0 12px;
+    color: #707b8d;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 12px 14px;
+    margin: 3px 0;
+    border-radius: 11px;
+    color: #9ca3af;
+    font-size: 14px;
+    transition: .22s ease;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    color: white;
+    background: rgba(255,255,255,.09);
+    transform: translateX(3px);
+}
+
+.nav-link.active {
+    background: linear-gradient(90deg,rgba(111,96,239,.28),rgba(111,96,239,.09));
+    box-shadow: inset 3px 0 #8e82ff;
+}
+
+.nav-icon {
+    width: 20px;
+    text-align: center;
+    font-size: 17px;
+}
+
+.sidebar-bottom {
+    margin-top: auto;
+    padding: 17px;
+    border: 1px solid rgba(255,255,255,.09);
+    border-radius: 14px;
+    background: rgba(255,255,255,.045);
+}
+
+.sidebar-bottom strong {
+    display: block;
+    font-size: 13px;
+    margin-bottom: 6px;
+}
+
+.sidebar-bottom p {
+    margin: 0;
+    color: #9ba5b5;
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+/* MAIN */
+
+.main {
+    min-width: 0;
+    flex: 1;
+    padding: 30px 38px 48px;
+}
+
+.topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 34px;
+}
+
+.eyebrow {
+    margin: 0 0 7px;
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+h1 {
+    margin: 0;
+    font-family: "Manrope", sans-serif;
+    font-size: clamp(24px,3vw,31px);
+    letter-spacing: -1.1px;
+}
+
+.top-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.avatar {
+    width: 39px;
+    height: 39px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: #e8e5ff;
+    color: #5d50d6;
+    font-weight: 800;
+    font-size: 13px;
+}
+
+/* BUTTONS */
+
+.button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 11px 16px;
+    border: 0;
+    border-radius: 10px;
+    background: var(--primary);
+    color: white;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    box-shadow: 0 6px 14px rgba(98,84,232,.18);
+    transition: transform .2s,box-shadow .2s,background .2s;
+}
+
+.button:hover {
+    background: #5144d0;
+    transform: translateY(-2px);
+    box-shadow: 0 9px 20px rgba(98,84,232,.25);
+}
+
+.button.secondary {
+    color: #5549d3;
+    background: var(--primary-light);
+    box-shadow: none;
+}
+
+.button.secondary:hover {
+    background: #e2dfff;
+}
+
+/* STAT CARDS */
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(4,minmax(0,1fr));
+    gap: 17px;
+    margin-bottom: 25px;
+}
+
+.stat-card {
+    position: relative;
+    overflow: hidden;
+    padding: 21px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    animation: rise .55s both;
+    transition: transform .25s,box-shadow .25s;
+}
+
+.stat-card:nth-child(2) { animation-delay: .07s; }
+.stat-card:nth-child(3) { animation-delay: .14s; }
+.stat-card:nth-child(4) { animation-delay: .21s; }
+
+.stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 15px 34px rgba(29,42,68,.09);
+}
+
+.stat-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.stat-label {
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.stat-icon {
+    width: 36px;
+    height: 36px;
+    display: grid;
+    place-items: center;
+    border-radius: 11px;
+    font-size: 17px;
+}
+
+.purple { color: var(--primary); background: var(--primary-light); }
+.green { color: var(--green); background: var(--green-light); }
+.orange { color: var(--orange); background: var(--orange-light); }
+.red { color: var(--red); background: var(--red-light); }
+
+.stat-value {
+    margin: 0 0 6px;
+    font-family: "Manrope",sans-serif;
+    font-size: clamp(22px,2.6vw,29px);
+    font-weight: 800;
+    letter-spacing: -1px;
+    overflow-wrap: anywhere;
+}
+
+.stat-note {
+    margin: 0;
+    color: var(--muted);
+    font-size: 11px;
+}
+
+/* PANELS */
+
+.content-grid {
+    display: grid;
+    grid-template-columns: minmax(0,1.65fr) minmax(260px,.85fr);
+    gap: 20px;
+    align-items: start;
+}
+
+.panel {
+    min-width: 0;
+    padding: 23px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    animation: rise .65s .12s both;
+}
+
+.panel-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 14px;
+    margin-bottom: 22px;
+}
+
+.panel-title {
+    margin: 0 0 5px;
+    font-family: "Manrope",sans-serif;
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: -.3px;
+}
+
+.panel-subtitle {
+    margin: 0;
+    color: var(--muted);
+    font-size: 11px;
+}
+
+/* DEAL LIST */
+
+.deal-list {
+    display: grid;
+    gap: 12px;
+}
+
+.deal-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px;
+    border: 1px solid #edf0f5;
+    border-radius: 12px;
+    transition: .2s ease;
+}
+
+.deal-row:hover {
+    border-color: #d9d4ff;
+    background: #fbfaff;
+    transform: translateX(3px);
+}
+
+.company-mark {
+    width: 39px;
+    height: 39px;
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    background: #f0efff;
+    color: #6558d8;
+    font-weight: 800;
+    font-size: 13px;
+}
+
+.deal-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.deal-name {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 13px;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+.deal-company {
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.deal-amount {
+    text-align: right;
+    white-space: nowrap;
+}
+
+.deal-amount strong {
+    display: block;
+    font-size: 13px;
+    margin-bottom: 5px;
+}
+
+.deal-amount small {
+    color: var(--muted);
+    font-size: 10px;
+}
+
+.pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 9px;
+    border-radius: 30px;
+    background: #f1f3f7;
+    color: #687386;
+    font-size: 10px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.pill.won { color: #13845f; background: #e4f7ef; }
+.pill.lost { color: #c94f5b; background: #fff0f1; }
+.pill.negotiation { color: #a66a15; background: #fff4e1; }
+.pill.proposal { color: #6254c9; background: #efedff; }
+
+/* PIPELINE */
+
+.stage-list {
+    display: grid;
+    gap: 19px;
+}
+
+.stage-heading {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 9px;
+    font-size: 12px;
+}
+
+.stage-heading span:first-child {
+    color: #596579;
+}
+
+.stage-heading strong {
+    font-size: 12px;
+}
+
+.track {
+    height: 8px;
+    overflow: hidden;
+    border-radius: 20px;
+    background: #f0f2f7;
+}
+
+.bar {
+    height: 100%;
+    width: 0;
+    border-radius: inherit;
+    background: linear-gradient(90deg,#7f73f0,#5c4bd8);
+    transform-origin: left;
+    animation: grow 1s .25s both;
+}
+
+.bar.green-bar {
+    background: linear-gradient(90deg,#3bc69b,#159b73);
+}
+
+.bar.orange-bar {
+    background: linear-gradient(90deg,#f6bd68,#e99a35);
+}
+
+.bar.red-bar {
+    background: linear-gradient(90deg,#f18c95,#df5c67);
+}
+
+/* EMPTY STATE */
+
+.empty {
+    padding: 32px 15px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+/* DEAL FORM */
+
+.form-panel {
+    display: none;
+    margin-bottom: 22px;
+    animation: rise .3s both;
+}
+
+.form-panel.show {
+    display: block;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2,minmax(0,1fr));
+    gap: 15px;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.field.full {
+    grid-column: 1/-1;
+}
+
+.field label {
+    color: #4d596b;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.field input,
+.field select,
+.field textarea {
+    width: 100%;
+    padding: 11px 12px;
+    border: 1px solid #e2e7ef;
+    border-radius: 9px;
+    outline: none;
+    background: #fbfcfe;
+    color: var(--text);
+    font-size: 13px;
+    transition: border .2s,box-shadow .2s;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+    border-color: #9187f3;
+    box-shadow: 0 0 0 3px rgba(98,84,232,.1);
+}
+
+.field textarea {
+    min-height: 82px;
+    resize: vertical;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 17px;
+}
+
+.footer-note {
+    margin-top: 22px;
+    color: #9aa4b3;
+    font-size: 10px;
+    text-align: center;
+}
+
+/* ANIMATIONS */
+
+@keyframes rise {
+    from {
+        opacity: 0;
+        transform: translateY(13px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes grow {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+}
+
+/* RESPONSIVE */
+
+@media (max-width:1100px) {
+    .sidebar { width: 215px; }
+    .main { padding: 27px 24px; }
+    .stats { grid-template-columns: repeat(2,minmax(0,1fr)); }
+    .content-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width:700px) {
+    .app { display: block; }
+
+    .sidebar {
+        width: 100%;
+        min-height: auto;
+        padding: 14px;
+    }
+
+    .brand { margin: 0 0 12px; }
+
+    .nav-label,
+    .sidebar-bottom { display: none; }
+
+    .sidebar nav {
+        display: flex;
+        gap: 6px;
+        overflow-x: auto;
+    }
+
+    .nav-link {
+        flex-shrink: 0;
+        margin: 0;
+        padding: 10px 12px;
+    }
+
+    .nav-link:hover,
+    .nav-link.active { transform: none; }
+
+    .main { padding: 22px 15px 35px; }
+
+    .topbar {
+        align-items: flex-start;
+        margin-bottom: 22px;
+    }
+
+    .top-actions { gap: 7px; }
+
+    .top-actions .button {
+        padding: 10px 11px;
+        font-size: 12px;
+    }
+
+    .stats { gap: 10px; }
+    .stat-card { padding: 15px; }
+    .stat-top { margin-bottom: 14px; }
+    .stat-icon { width: 31px; height: 31px; }
+    .panel { padding: 17px; }
+    .deal-row { padding: 10px; }
+    .deal-amount { display: none; }
+    .form-grid { grid-template-columns: 1fr; }
+    .field.full { grid-column: auto; }
+}
+
+@media (prefers-reduced-motion:reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: .01ms !important;
+    }
+}
+</style>
+</head>
+
+<body>
+<div class="app">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <!-- FIXED: endpoint is home, not index -->
+        <a class="brand" href="{{ url_for('home') }}">
+            <div class="brand-icon">D</div>
+            <div class="brand-name">Deal<span>Mind</span></div>
+        </a>
+
+        <p class="nav-label">Workspace</p>
+
+        <nav>
+            <!-- FIXED: endpoint is home, not index -->
+            <a class="nav-link active" href="{{ url_for('home') }}">
+                <span class="nav-icon">▦</span>
+                Dashboard
+            </a>
+
+            <a class="nav-link" href="#deals">
+                <span class="nav-icon">◫</span>
+                Deals
+            </a>
+
+            <a class="nav-link" href="#pipeline">
+                <span class="nav-icon">◷</span>
+                Pipeline
+            </a>
+
+            <a class="nav-link" href="#dealForm" onclick="showDealForm(event)">
+                <span class="nav-icon">＋</span>
+                Add a deal
+            </a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <strong>✦ Intelligence at work</strong>
+            <p>
+                Track opportunities, understand risks, and make more informed business decisions.
+            </p>
+        </div>
+
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+
+        <header class="topbar">
+            <div>
+                <p class="eyebrow">OVERVIEW / WORKSPACE</p>
+                <h1>Good to see you 👋</h1>
+            </div>
+
+            <div class="top-actions">
+                <button class="button" type="button" onclick="showDealForm()">
+                    ＋ New deal
+                </button>
+                <div class="avatar" title="DealMind user">DM</div>
+            </div>
+        </header>
+
+        <!-- STATISTICS -->
+        <section class="stats">
+
+            <article class="stat-card">
+                <div class="stat-top">
+                    <span class="stat-label">Total deals</span>
+                    <span class="stat-icon purple">▦</span>
+                </div>
+                <p class="stat-value">{{ total_deals|default(0) }}</p>
+                <p class="stat-note">All opportunities in your workspace</p>
+            </article>
+
+            <article class="stat-card">
+                <div class="stat-top">
+                    <span class="stat-label">Total pipeline value</span>
+                    <span class="stat-icon green">₹</span>
+                </div>
+                <p class="stat-value">
+                    ₹{{ "{:,.0f}".format(total_value|default(0)|float) }}
+                </p>
+                <p class="stat-note">Combined value of recorded deals</p>
+            </article>
+
+            <article class="stat-card">
+                <div class="stat-top">
+                    <span class="stat-label">Weighted value</span>
+                    <span class="stat-icon orange">◈</span>
+                </div>
+                <p class="stat-value">
+                    ₹{{ "{:,.0f}".format(weighted_value|default(0)|float) }}
+                </p>
+                <p class="stat-note">Value adjusted by deal probability</p>
+            </article>
+
+            <article class="stat-card">
+                <div class="stat-top">
+                    <span class="stat-label">Active deals</span>
+                    <span class="stat-icon red">↗</span>
+                </div>
+                <p class="stat-value">{{ active_deals|default(0) }}</p>
+                <p class="stat-note">Deals still in progress</p>
+            </article>
+
+        </section>
+
+        <!-- ADD DEAL FORM -->
+        <section class="panel form-panel" id="dealForm">
+
+            <div class="panel-header">
+                <div>
+                    <h2 class="panel-title">Create a new deal</h2>
+                    <p class="panel-subtitle">
+                        Add an opportunity to your business pipeline.
+                    </p>
+                </div>
+
+                <button type="button" class="button secondary" onclick="hideDealForm()">
+                    Close ✕
+                </button>
+            </div>
+
+            <form action="{{ url_for('add_deal') }}" method="POST">
+
+                <div class="form-grid">
+
+                    <div class="field">
+                        <label for="company_name">Company name *</label>
+                        <input id="company_name" name="company_name" type="text"
+                               placeholder="e.g. Acme Technologies" required>
+                    </div>
+
+                    <div class="field">
+                        <label for="deal_name">Deal name *</label>
+                        <input id="deal_name" name="deal_name" type="text"
+                               placeholder="e.g. Enterprise software license" required>
+                    </div>
+
+                    <div class="field">
+                        <label for="deal_value">Deal value (₹) *</label>
+                        <input id="deal_value" name="deal_value" type="number"
+                               min="0" step="0.01" placeholder="500000" required>
+                    </div>
+
+                    <div class="field">
+                        <label for="stage">Stage</label>
+                        <select id="stage" name="stage">
+                            <option value="Lead">Lead</option>
+                            <option value="Qualified">Qualified</option>
+                            <option value="Proposal">Proposal</option>
+                            <option value="Negotiation">Negotiation</option>
+                            <option value="Won">Won</option>
+                            <option value="Lost">Lost</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label for="probability">Probability (%)</label>
+                        <input id="probability" name="probability" type="number"
+                               min="0" max="100" value="50">
+                    </div>
+
+                    <div class="field">
+                        <label for="contact_name">Contact person</label>
+                        <input id="contact_name" name="contact_name" type="text"
+                               placeholder="Contact name">
+                    </div>
+
+                    <div class="field">
+                        <label for="contact_email">Contact email</label>
+                        <input id="contact_email" name="contact_email" type="email"
+                               placeholder="name@company.com">
+                    </div>
+
+                    <div class="field full">
+                        <label for="notes">Notes</label>
+                        <textarea id="notes" name="notes"
+                                  placeholder="Add useful details about this opportunity..."></textarea>
+                    </div>
+
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="button secondary"
+                            onclick="hideDealForm()">Cancel</button>
+                    <button type="submit" class="button">Save deal →</button>
+                </div>
+
+            </form>
+        </section>
+
+        <!-- DEALS AND PIPELINE -->
+        <section class="content-grid">
+
+            <!-- RECENT DEALS -->
+            <article class="panel" id="deals">
+
+                <div class="panel-header">
+                    <div>
+                        <h2 class="panel-title">Recent deals</h2>
+                        <p class="panel-subtitle">
+                            A quick look at your latest opportunities.
+                        </p>
+                    </div>
+
+                    <button type="button" class="button secondary"
+                            onclick="showDealForm()">＋ Add deal</button>
+                </div>
+
+                {% if deals %}
+
+                <div class="deal-list">
+
+                    {% for deal in deals %}
+
+                    <a class="deal-row"
+                       href="{{ url_for('deal_detail', deal_id=deal.id) }}">
+
+                        <div class="company-mark">
+                            {{ (deal.company_name or deal.company or 'D')[:1]|upper }}
+                        </div>
+
+                        <div class="deal-info">
+                            <span class="deal-name">
+                                {{ deal.deal_name or deal.company_name or deal.company or 'Untitled deal' }}
+                            </span>
+
+                            <span class="deal-company">
+                                {{ deal.company_name or deal.company or 'Company not specified' }}
+                            </span>
+                        </div>
+
+                        <div class="deal-amount">
+                            <strong>
+                                ₹{{ "{:,.0f}".format((deal.deal_value or 0)|float) }}
+                            </strong>
+                            <small>
+                                {{ deal.probability|default(0) }}% probability
+                            </small>
+                        </div>
+
+                        {% set stage_name = (deal.stage or 'Lead')|lower %}
+
+                        <span class="pill {% if stage_name == 'won' %}won{% elif stage_name == 'lost' %}lost{% elif stage_name == 'negotiation' %}negotiation{% elif stage_name == 'proposal' %}proposal{% endif %}">
+                            {{ deal.stage or 'Lead' }}
+                        </span>
+
+                    </a>
+
+                    {% endfor %}
+
+                </div>
+
+                {% else %}
+
+                <div class="empty">
+                    <div style="font-size:30px;margin-bottom:10px;">◫</div>
+                    <strong>No deals yet</strong>
+                    <br>
+                    Create your first deal to start building your pipeline.
+
+                    <div style="margin-top:16px;">
+                        <button type="button" class="button"
+                                onclick="showDealForm()">
+                            ＋ Create first deal
+                        </button>
+                    </div>
+                </div>
+
+                {% endif %}
+
+            </article>
+
+            <!-- PIPELINE -->
+            <article class="panel" id="pipeline">
+
+                <div class="panel-header">
+                    <div>
+                        <h2 class="panel-title">Pipeline overview</h2>
+                        <p class="panel-subtitle">Deals grouped by stage.</p>
+                    </div>
+                    <span class="stat-icon purple">◷</span>
+                </div>
+
+                {% set stage_total = (stage_counts.values()|sum) if stage_counts else 0 %}
+
+                {% if stage_counts and stage_total > 0 %}
+
+                <div class="stage-list">
+
+                    {% for stage, count in stage_counts.items() %}
+
+                    {% set percentage = count / stage_total * 100 %}
+                    {% set stage_lower = stage|lower %}
+
+                    <div>
+                        <div class="stage-heading">
+                            <span>{{ stage }}</span>
+                            <strong>
+                                {{ count }}
+                                <span style="color:#9aa4b3;font-weight:500;">
+                                    · {{ "%.0f"|format(percentage) }}%
+                                </span>
+                            </strong>
+                        </div>
+
+                        <div class="track">
+                            <div
+                                class="bar {% if stage_lower == 'won' %}green-bar{% elif stage_lower == 'lost' %}red-bar{% elif stage_lower == 'negotiation' %}orange-bar{% endif %}"
+                                data-width="{{ percentage }}">
+                            </div>
+                        </div>
+                    </div>
+
+                    {% endfor %}
+
+                </div>
+
+                {% else %}
+
+                <div class="empty">
+                    Your pipeline chart will appear here after you add deals.
+                </div>
+
+                {% endif %}
+
+                <div style="height:1px;background:var(--border);margin:24px 0 19px;"></div>
+
+                <div style="display:flex;justify-content:space-between;gap:12px;margin-bottom:13px;">
+                    <span style="font-size:12px;color:var(--muted);">Won deals</span>
+                    <strong style="font-size:12px;">{{ won_deals|default(0) }}</strong>
+                </div>
+
+                <div style="display:flex;justify-content:space-between;gap:12px;">
+                    <span style="font-size:12px;color:var(--muted);">Win rate</span>
+                    <strong style="font-size:12px;color:var(--green);">
+                        {{ win_rate|default(0) }}%
+                    </strong>
+                </div>
+
+            </article>
+
+        </section>
+
+        <p class="footer-note">
+            DealMind · AI-powered business intelligence · Samuel Technologies
+        </p>
+
+    </main>
+</div>
+
+<script>
+function showDealForm(event) {
+    if (event) {
+        event.preventDefault();
+    }
+
+    const form = document.getElementById("dealForm");
+
+    form.classList.add("show");
+
+    form.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
+
+    const firstInput = document.getElementById("company_name");
+
+    if (firstInput) {
+        setTimeout(function() {
+            firstInput.focus();
+        }, 250);
+    }
+}
+
+function hideDealForm() {
+    document.getElementById("dealForm").classList.remove("show");
+}
+
+/* Animate pipeline bars using values supplied by Flask */
+document.querySelectorAll(".bar[data-width]").forEach(function(bar) {
+    const width = Number(bar.dataset.width);
+
+    if (Number.isFinite(width)) {
+        const safeWidth = Math.max(0, Math.min(100, width));
+        bar.style.width = safeWidth + "%";
+    }
+});
+</script>
+
+</body>
+</html>
